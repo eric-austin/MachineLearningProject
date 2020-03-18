@@ -12,40 +12,6 @@ public class Preprocessor {
     //instance variables
     private ArrayList<String> missingStrings;
     
-    public static void main(String[] args) {
-    	try {
-			FileReader fileReader = new FileReader("NCDB_1999_to_2017.csv");
-			BufferedReader buffReader = new BufferedReader(fileReader);
-            FileWriter fileWriter = new FileWriter("transformed_NCDB_1999_to_2017.csv");
-            BufferedWriter buffWriter = new BufferedWriter(fileWriter);
-            
-            Preprocessor p = new Preprocessor();
-            String line = null;
-            String[] values = null;
-            
-            line = buffReader.readLine();
-            values = line.split(",");
-            values = p.updateLabels(values);
-            line = String.join(",", values);
-            buffWriter.write(line);
-            
-            while ((line = buffReader.readLine()) != null) {
-            	values = line.split(",");
-            	values = p.convertFields(values);
-            	line = String.join(",", values);
-            	buffWriter.newLine();
-            	buffWriter.write(line);
-            }
-            
-            buffReader.close();
-            buffWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    }
-
 
     public Preprocessor() {
         //create list of strings that indicate field missing
