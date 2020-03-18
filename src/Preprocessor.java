@@ -176,43 +176,44 @@ public class Preprocessor {
         }
         return values;
     }
-//PROBLEM WITH THIS FUNCTION
+
     private String[] convertTime(String[] values) {
-        int month = Integer.parseInt(values[1]);
+        String month = values[1];
         int hour = Integer.parseInt(values[3]);
+
         int a = 0;
         int b = 0;
-        if(month==1) {// +1 if daylight savings
+        if(month=="1") {// +1 if daylight savings
             a=8;
             b=16;
-        } else if(month==2) {
+        } else if(month=="2") {
             a=7;
             b=17;
-        } else if(month==3) {
+        } else if(month=="3") {
             a=6+1;
             b=18+1;
-        } else if(month==4) {
+        } else if(month=="4") {
             a=5+1;
             b=19+1;
-        } else if(month==5) {
+        } else if(month=="5") {
             a=4+1;
             b=19+1;
-        } else if(month==6) {
+        } else if(month=="6") {
             a=3+1;
             b=20+1;
-        } else if(month==7) {
+        } else if(month=="7") {
             a=4+1;
             b=20+1;
-        } else if(month==8) {
+        } else if(month=="8") {
             a=4+1;
             b=19+1;
-        } else if(month==9) {
+        } else if(month=="9") {
             a=5+1;
             b=18+1;
-        } else if(month==10) {
+        } else if(month=="10") {
             a=6+1;
             b=17+1;
-        } else if(month==11) {
+        } else if(month=="11") {
             a=7;
             b=16;
         } else {
