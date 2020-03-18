@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +11,40 @@ import java.util.Random;
 public class Preprocessor {
     //instance variables
     private ArrayList<String> missingStrings;
+    
+    public static void main(String[] args) {
+    	try {
+			FileReader fileReader = new FileReader("NCDB_1999_to_2017.csv");
+			BufferedReader buffReader = new BufferedReader(fileReader);
+            FileWriter fileWriter = new FileWriter("transformed_NCDB_1999_to_2017.csv");
+            BufferedWriter buffWriter = new BufferedWriter(fileWriter);
+            
+            Preprocessor p = new Preprocessor();
+            String line = null;
+            String[] values = null;
+            
+            line = buffReader.readLine();
+            values = line.split(",");
+            values = p.updateLabels(values);
+            line = String.join(",", values);
+            buffWriter.write(line);
+            
+            while ((line = buffReader.readLine()) != null) {
+            	values = line.split(",");
+            	values = p.convertFields(values);
+            	line = String.join(",", values);
+            	buffWriter.newLine();
+            	buffWriter.write(line);
+            }
+            
+            buffReader.close();
+            buffWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
 
 
     public Preprocessor() {
@@ -125,7 +160,7 @@ public class Preprocessor {
 
     private String[] convertFields(String[] values) {
         values = convertDriverAge(values);//Driver Age
-        //values = convertTime(values);//Time of Collision
+        values = convertTime(values);//Time of Collision
         values = convertVehicleNumber(values);//Number of Vehicles Involved
         values = convertVehicleAge(values);//Age of Vehicle
         return values;
