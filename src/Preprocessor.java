@@ -8,111 +8,111 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Preprocessor {
-	//instance variables
-	private ArrayList<String> missingStrings;
+    //instance variables
+    private ArrayList<String> missingStrings;
 
 
-	public Preprocessor() {
-		//create list of strings that indicate field missing
-		this.missingStrings = new ArrayList<String>();
-		this.missingStrings.add("UU");
-		this.missingStrings.add("XX");
-		this.missingStrings.add("X");
-		this.missingStrings.add("U");
-		this.missingStrings.add("QQ");
-		this.missingStrings.add("Q");
-		this.missingStrings.add("UUUU");
-		this.missingStrings.add("XXXX");
-	}
+    public Preprocessor() {
+        //create list of strings that indicate field missing
+        this.missingStrings = new ArrayList<String>();
+        this.missingStrings.add("UU");
+        this.missingStrings.add("XX");
+        this.missingStrings.add("X");
+        this.missingStrings.add("U");
+        this.missingStrings.add("QQ");
+        this.missingStrings.add("Q");
+        this.missingStrings.add("UUUU");
+        this.missingStrings.add("XXXX");
+    }
 
-	public void removeIncompleteExamples(String filepath) {
-		//variable to hold lines being read/written
-		String line = null;
-		String output= null;
-		try {
-			//set up file reader and writer
-			FileReader fileReader = new FileReader(filepath);
-			BufferedReader buffReader = new BufferedReader(fileReader);
-			FileWriter fileWriter = new FileWriter("clean_" + filepath);
-			BufferedWriter buffWriter = new BufferedWriter(fileWriter);
-			//copy feature labels
-			line = buffReader.readLine();
+    public void removeIncompleteExamples(String filepath) {
+        //variable to hold lines being read/written
+        String line = null;
+        String output= null;
+        try {
+            //set up file reader and writer
+            FileReader fileReader = new FileReader(filepath);
+            BufferedReader buffReader = new BufferedReader(fileReader);
+            FileWriter fileWriter = new FileWriter("clean_" + filepath);
+            BufferedWriter buffWriter = new BufferedWriter(fileWriter);
+            //copy feature labels
+            line = buffReader.readLine();
 
-			String[] values = line.split(",");
-			//String[] truncatedValues = Arrays.copyOf(values, values.length - 1); leave c case in to change
-			String[] truncatedValues = updateLabels(values);
+            String[] values = line.split(",");
+            //String[] truncatedValues = Arrays.copyOf(values, values.length - 1); leave c case in to change
+            String[] truncatedValues = updateLabels(values);
 
-			output = String.join(",", truncatedValues);
+            output = String.join(",", truncatedValues);
 
-			buffWriter.write(output);
-			buffWriter.newLine();
-			//iterate through lines in input file
-			while ((line = buffReader.readLine()) != null) {
-				//split line on comma
-				values = line.split(",");
-				//check whether any of the fields match a string indicating missing value
-				boolean valid = true;
-				for (int j = 0; j < values.length; j++) {
-					if (this.missingStrings.contains(values[j])) {
-						valid = false;
-						break;
-					}
-				}
-				//if example valid ie. no missing fields, write to output
-				if (valid) {
-				    //Convert fields (Incorporating Relevant Knowledge)
-				    values = convertFields(values);
+            buffWriter.write(output);
+            buffWriter.newLine();
+            //iterate through lines in input file
+            while ((line = buffReader.readLine()) != null) {
+                //split line on comma
+                values = line.split(",");
+                //check whether any of the fields match a string indicating missing value
+                boolean valid = true;
+                for (int j = 0; j < values.length; j++) {
+                    if (this.missingStrings.contains(values[j])) {
+                        valid = false;
+                        break;
+                    }
+                }
+                //if example valid ie. no missing fields, write to output
+                if (valid) {
+                    //Convert fields (Incorporating Relevant Knowledge)
+                    values = convertFields(values);
 
-					//truncatedValues = Arrays.copyOf(values, values.length - 1);
-				    truncatedValues = Arrays.copyOf(values, values.length);
+                    //truncatedValues = Arrays.copyOf(values, values.length - 1);
+                    truncatedValues = Arrays.copyOf(values, values.length);
 
-					output = String.join(",", truncatedValues);
-					buffWriter.write(output);
-					buffWriter.newLine();
-				}
-			}
-			//close streams
-			buffReader.close();
-			buffWriter.close();
+                    output = String.join(",", truncatedValues);
+                    buffWriter.write(output);
+                    buffWriter.newLine();
+                }
+            }
+            //close streams
+            buffReader.close();
+            buffWriter.close();
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void createRandomPartition(String filepath) {
-		//variable to hold lines being read/written
-		String line = null;
-		Random rng = new Random();
-		try {
-			//create file reader and writers
-			FileReader fileReader = new FileReader(filepath);
-			BufferedReader buffReader = new BufferedReader(fileReader);
-			BufferedWriter[] buffWriters = new BufferedWriter[10];
-			for (int i = 0; i < 10; i++) {
-				buffWriters[i] = new BufferedWriter(new FileWriter("partition" + i + ".csv"));
-			}
-			//copy labels to each partition
-			line = buffReader.readLine();
-			for (BufferedWriter b : buffWriters) {
-				b.write(line);
-				b.newLine();
-			}
-			//iterate through all the lines of input file
-			while ((line = buffReader.readLine()) != null) {
-				int i = rng.nextInt(10);
-				buffWriters[i].write(line);
-				buffWriters[i].newLine();
-			}
-			//close streams
-			buffReader.close();
-			for (BufferedWriter b : buffWriters) {
-				b.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        //variable to hold lines being read/written
+        String line = null;
+        Random rng = new Random();
+        try {
+            //create file reader and writers
+            FileReader fileReader = new FileReader(filepath);
+            BufferedReader buffReader = new BufferedReader(fileReader);
+            BufferedWriter[] buffWriters = new BufferedWriter[10];
+            for (int i = 0; i < 10; i++) {
+                buffWriters[i] = new BufferedWriter(new FileWriter("partition" + i + ".csv"));
+            }
+            //copy labels to each partition
+            line = buffReader.readLine();
+            for (BufferedWriter b : buffWriters) {
+                b.write(line);
+                b.newLine();
+            }
+            //iterate through all the lines of input file
+            while ((line = buffReader.readLine()) != null) {
+                int i = rng.nextInt(10);
+                buffWriters[i].write(line);
+                buffWriters[i].newLine();
+            }
+            //close streams
+            buffReader.close();
+            for (BufferedWriter b : buffWriters) {
+                b.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private String[] updateLabels(String[] values) {
         values[values.length-1]="V_AGE_CAT";//change c case
@@ -123,13 +123,13 @@ public class Preprocessor {
         return values;
     }
 
-	private String[] convertFields(String[] values) {
-	    values = convertDriverAge(values);//Driver Age
-	    values = convertTime(values);//Time of Collision
-	    values = convertVehicleNumber(values);//Number of Vehicles Involved
-	    values = convertVehicleAge(values);//Age of Vehicle
-	    return values;
-	}
+    private String[] convertFields(String[] values) {
+        values = convertDriverAge(values);//Driver Age
+        //values = convertTime(values);//Time of Collision
+        values = convertVehicleNumber(values);//Number of Vehicles Involved
+        values = convertVehicleAge(values);//Age of Vehicle
+        return values;
+    }
 
     private String[] convertVehicleAge(String[] values) {
         if(values[values.length-9].equals("NNNN")) {
@@ -175,9 +175,59 @@ public class Preprocessor {
         }
         return values;
     }
-
+//PROBLEM WITH THIS FUNCTION
     private String[] convertTime(String[] values) {
-        // TODO Auto-generated method stub
+        int month = Integer.parseInt(values[1]);
+        int hour = Integer.parseInt(values[3]);
+        int a = 0;
+        int b = 0;
+        if(month==1) {// +1 if daylight savings
+            a=8;
+            b=16;
+        } else if(month==2) {
+            a=7;
+            b=17;
+        } else if(month==3) {
+            a=6+1;
+            b=18+1;
+        } else if(month==4) {
+            a=5+1;
+            b=19+1;
+        } else if(month==5) {
+            a=4+1;
+            b=19+1;
+        } else if(month==6) {
+            a=3+1;
+            b=20+1;
+        } else if(month==7) {
+            a=4+1;
+            b=20+1;
+        } else if(month==8) {
+            a=4+1;
+            b=19+1;
+        } else if(month==9) {
+            a=5+1;
+            b=18+1;
+        } else if(month==10) {
+            a=6+1;
+            b=17+1;
+        } else if(month==11) {
+            a=7;
+            b=16;
+        } else {
+            a=8;
+            b=16;
+        }
+
+        if(hour==a || hour== a+1 ) {
+            values[3]="sunRise";
+        } else if(hour > a+1 && hour < b ) {
+            values[3]="midday";
+        } else if (hour==b || hour == b+1) {
+            values[3]="sunSet";
+        } else {
+            values[3]="night";
+        }
         return values;
     }
 
@@ -215,6 +265,4 @@ public class Preprocessor {
         }
         return values;
     }
-
-
 }
